@@ -1,0 +1,74 @@
+repositories {
+    google()
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.1'
+    }
+}
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdk 33
+
+    defaultConfig {
+        applicationId 'com.android.contacts'
+        minSdk 26
+        targetSdk 33
+    }
+
+    signingConfigs {
+        // These are public keys provided by AOSP, Use different passcode protected keys for production
+        debug {
+            storeFile file('shared.jks')
+            storePassword 'shared'
+            keyAlias 'shared'
+            keyPassword 'shared'
+        }
+    }
+
+    sourceSets {
+        main {
+            assets.srcDirs = ['assets']
+            res.srcDirs = ['res']
+            java.srcDirs = ['src', 'src-bind']
+            manifest.srcFile 'AndroidManifest.xml'
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lint {
+        ignore 'ProtectedPermissions', 'ExtraTranslation', 'ImpliedQuantity', 'MissingQuantity', 'MissingTranslation'
+    }
+}
+
+dependencies {
+    compileOnly fileTree(dir: 'system_libs/', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'com.google.guava:guava:24.1-jre'
+    implementation 'androidx.legacy:legacy-support-v13:1.0.0'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.53'
+    implementation 'com.googlecode.libphonenumber:geocoder:2.189'
+    implementation 'androidx.palette:palette:1.0.0'
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+}
